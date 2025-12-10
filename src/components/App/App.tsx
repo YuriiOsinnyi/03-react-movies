@@ -14,7 +14,9 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  async function onFound(query: string) {
+  async function searchAction(formData: FormData) {
+    const query = formData.get("query") as string;
+
     setLoading(true);
     setError(false);
 
@@ -34,7 +36,7 @@ export default function App() {
 
   return (
     <>
-      <SearchBar onSubmit={onFound} />
+      <SearchBar searchAction={searchAction} />
       {loading && <Loader />}
       {!loading && !error && (
         <MovieGrid movies={movies} onSelect={setSelectedMovie} />
