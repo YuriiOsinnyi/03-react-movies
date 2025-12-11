@@ -14,19 +14,18 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  async function searchAction(formData: FormData) {
-    const query = formData.get("query") as string;
-
+  function onFound(query: string) {
     setLoading(true);
     setError(false);
+    setMovies([]);
 
     try {
-      const response = await fetchMovies(query);
-      if (!response.length) {
-        toast.error("No movies found for your request.");
-      }
-      setMovies(response);
-      console.log(response);
+      fetchMovies(query).then((response) => {
+        if (!response.length) {
+          toast.error("No movies found for your request.");
+        }
+        setMovies(response);
+      });
     } catch {
       setError(true);
     } finally {
@@ -36,7 +35,7 @@ export default function App() {
 
   return (
     <>
-      <SearchBar searchAction={searchAction} />
+      <SearchBar onSubmit={onFound} />
       {loading && <Loader />}
       {!loading && !error && (
         <MovieGrid movies={movies} onSelect={setSelectedMovie} />
